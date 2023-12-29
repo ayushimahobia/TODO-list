@@ -1,10 +1,16 @@
-import { Document } from "mongoose"
-
-export interface ITodo extends Document {
-  name: string
-  description: string
-  status: boolean
-  email: string;
-  password: string;
-  username: string;
+export interface ITodo {
+   title: string;
+   description: string;
+   status: string;
+   user : string;
+   isActivated:boolean;
+   date: Date;
 }
+export interface ITodoWithEmail extends ITodo{
+  email: string;
+}
+
+export interface ITodoWithPassword extends ITodo {
+  password: string;
+}
+

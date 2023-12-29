@@ -1,11 +1,9 @@
 import mongoose, {model,Schema } from "mongoose";
-import { ITodo } from "../types/todo";
-import { timeStamp } from "console";
 
 const UserSchema:Schema = new Schema({
-    username :{
+    username : {
         type:String,
-        required : true
+        require : true
     },
     password : {
         type :String,
@@ -16,4 +14,5 @@ const UserSchema:Schema = new Schema({
         required : true
     }
 }, {timestamps:true});
-export default model<ITodo>("user", UserSchema)
+
+export default model("user", UserSchema)

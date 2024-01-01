@@ -8,11 +8,11 @@ import { error } from "console";
 export default class TodoListService {
   private todoDao = new TodoDao();
 
-  public addImage = async (img: string, userId: string) => {
-    if (!userId || !img) {
-      throw new Error("Image not exist or id not found");
+  public addImage = async (imageUrl: string, userId: string) => {
+    if (!userId || !imageUrl) {
+      throw new Error("Imageurl not exist or id not found");
     }
-    return await this.todoDao.addImagedao(img, userId);
+    return await this.todoDao.addImagedao(imageUrl, userId);
   };
 
   public getTodosservices = async (userId: string) => {
@@ -49,6 +49,7 @@ export default class TodoListService {
     des: string,
     user: string,
     title: string,
+    imageUpload:string,
     status: string,
     date :Date
   ) => {
@@ -60,6 +61,7 @@ export default class TodoListService {
       user: user,
       title: title,
       isActivated:true,
+      imageUpload:"",
       status: status,
       date : date
     });

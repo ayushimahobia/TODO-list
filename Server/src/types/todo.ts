@@ -3,6 +3,7 @@ export interface ITodo {
    description: string;
    status: string;
    user : string;
+   imageUpload:string,
    isActivated:boolean;
    date: Date;
 }

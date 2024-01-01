@@ -1,8 +1,9 @@
 import { Response, Request, NextFunction } from "express";
 import TodoListService from "../../Services/todo.service";
-import csvtojson from 'csvtojson'
+
 import { google } from "googleapis";
 import fs from 'fs'
+import { ITodo } from "../../types/todo";
 
 const GOOGLE_API_FOLDER = '1KDoJUw5MpK2lnuqh4Z9RM2LqRPIkk3rC'
 
@@ -45,6 +46,7 @@ class TodoList {
     const title = req.body.title;
     const status = req.body.status;
     const date = req.body.date;
+    const imageUpload = req.body.imageUpload;
     try {
       const updateTodo = await this.addServices.updateTodoservices(
         userId,
@@ -52,6 +54,7 @@ class TodoList {
         user,
         title,
         status,
+        imageUpload,
         date
       );
       res.status(200).json({
@@ -78,7 +81,7 @@ class TodoList {
 
   public addImage = async(req:Request,res:Response,next:NextFunction) => {
       
-      console.log(req, 'this is in controller');
+     // console.log(req, 'this is in controller');
        const image = req.file;
        const userId = req.params.id
        
@@ -89,7 +92,6 @@ class TodoList {
         if (!image.path) {
           return res.status(400).send({ error: 'Image file path is undefined' });
         }
-    const uploadImg = await this.addServices.addImage(image.path,userId);
     try{
         const auth = new google.auth.GoogleAuth({
         keyFile: './drive.json',
@@ -115,9 +117,12 @@ class TodoList {
         media : media,
         fields: "id",
       })
-       //const url :string  = `https:drive.google.com/uc?export=view&id=${result.data.id}`
-       console.log(result); 
-       res.send(result.data.id);
+       const imageUrl :string  = `https:drive.google.com/uc?export=view&id=${result.data.id}`
+       const uploadImg:any   = await this.addServices.addImage(imageUrl,userId);
+       console.log(uploadImg); 
+      //  res.send(result.data.id);
+     //  console.log(uploadImg.imageUpload, "-----------------")
+       res.send(uploadImg);
     } catch (error) {
       throw error
     }

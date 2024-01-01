@@ -2,13 +2,15 @@
 import { ITodo } from "../types/todo";
 import todo from "../models/todo";
 
-
+ 
 export default class TodoDao{
     private todoModel = todo;
     constructor(){}
-    public addImagedao = async (img:any,id:string) => {
+    public addImagedao = async (imageUrl:any,id:string) => {
       console.log("image in dao",id);
-      return await this.todoModel.findByIdAndUpdate(id,{imageUpload:img})
+      console.log(imageUrl,'image url'); 
+      await this.todoModel.findByIdAndUpdate(id,{imageUpload:imageUrl})
+      return imageUrl;
     }
 
     public getTodosdao = async (userId: string) => { 
@@ -16,7 +18,7 @@ export default class TodoDao{
         const alltodos: ITodo[] = await todo.find({ user: userId });
         return alltodos;
     }
-
+ 
     public addTododao = async(userId:string,description:string,status:string,title:string,isActivated:boolean,date:Date)=>{
         const toadd  = new todo ({
             user : String(userId),
@@ -30,13 +32,14 @@ export default class TodoDao{
         return await toadd.save(); 
     }
 
-    public updateTododao = async(userId:string,{description,user,title,status,date,isActivated}:ITodo)=>{
+    public updateTododao = async(userId:string,{description,user,title,status,date,isActivated,imageUpload}:ITodo)=>{
       return await todo.findByIdAndUpdate(userId,{
         description : description,
         user : user,
         title : title,
         status : status,
         isActivated:true,
+        imageUpload:"",
         date : Date.now()
       })
     }

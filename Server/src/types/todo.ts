@@ -4,7 +4,7 @@ export interface ITodo {
    status: string;
    user : string;
    imageUpload:string,
-   isActivated:boolean;
+   isActivated:boolean,
    date: Date;
 }
 export interface ITodoWithEmail extends ITodo{

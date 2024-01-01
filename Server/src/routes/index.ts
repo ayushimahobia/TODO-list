@@ -36,7 +36,10 @@ class userRoutes {
       this.auth.verifyuser,
       this.control.addImage 
     );
-    this.router.post("/csv-upload",this.fileUploads.Uploads.single('file'),this.auth.verifyuser,this.control.addCsv)
+    this.router.post("/csv-upload",
+    this.fileUploads.Uploads.single('file'),
+    this.auth.verifyuser,this.control.addCsv);
+    this.router.get("/get-image/:id",this.auth.verifyuser,this.control.getImage);
   } 
 } 
 export default userRoutes;

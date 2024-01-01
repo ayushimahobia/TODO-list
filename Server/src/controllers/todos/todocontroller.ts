@@ -25,10 +25,10 @@ class TodoList {
   public addTodo = async (req: Request, res: Response) => {
     console.log(req.body, "this is the body");
     const userId = req.body.id;
-    const { title, description, status ,isActivated,date } = req.body;
+    const { title, description, status ,isActivated,date,imageUpload} = req.body;
     try {
       console.log(userId, "user id of addtodo");
-      const todo = await this.addServices.addTodoservices(userId,title,description,status,isActivated,date);
+      const todo = await this.addServices.addTodoservices(userId,title,description,status,isActivated,imageUpload,date);
       const val = todo.user;
       console.log(val, "this is val in addtodo");
       console.log(todo, "todo id in controller");
@@ -125,6 +125,17 @@ class TodoList {
        res.send(uploadImg);
     } catch (error) {
       throw error
+    } 
+  }
+
+  public getImage = async (req:Request , res:Response,next : NextFunction) => {
+    const id = req.params.id;
+    try{
+      const getImgeurl = await this.addServices.getImageservices(id);
+      return await res.send(getImgeurl);
+    } 
+    catch(error){
+       throw (error);
     }
   }
 

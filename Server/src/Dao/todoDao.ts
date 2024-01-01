@@ -1,6 +1,7 @@
 
 import { ITodo } from "../types/todo";
 import todo from "../models/todo";
+import { error } from "console";
 
  
 export default class TodoDao{
@@ -13,19 +14,30 @@ export default class TodoDao{
       return imageUrl;
     }
 
+    public getImageUrl = async (id:string) => {
+      console.log(id);
+      const res : ITodo | null = await todo.findOne({_id:id});
+      console.log(res);
+      if(res){
+        return res.imageUpload;
+      }
+      return ("");
+    }
+
     public getTodosdao = async (userId: string) => { 
         console.log(userId, 'userid in dao');
         const alltodos: ITodo[] = await todo.find({ user: userId });
         return alltodos;
     }
  
-    public addTododao = async(userId:string,description:string,status:string,title:string,isActivated:boolean,date:Date)=>{
+    public addTododao = async(userId:string,description:string,status:string,title:string,isActivated:boolean,imageUpload:string,date:Date)=>{
         const toadd  = new todo ({
             user : String(userId),
             description : description,
             title : title,
             status :status,
             isActivated : true,
+            imageUpload : "",
             date: Date.now()
         })
         console.log(await toadd.save());

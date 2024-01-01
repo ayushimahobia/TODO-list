@@ -22,12 +22,17 @@ export default class TodoListService {
     return await this.todoDao.getTodosdao(userId);
   };
 
+  public getImageservices = async (id:string)=>{
+     return this.todoDao.getImageUrl(id);
+  }
+
   public addTodoservices = async ( 
     userId: string,
     title: string,
     description: string,
     status: string,
     isActivated: boolean,
+    imageUpload:string,
     date: Date
   ) => {
     if (!userId) {
@@ -40,6 +45,7 @@ export default class TodoListService {
       status,
       title,
       isActivated,
+      imageUpload,
       date
     );
   };
@@ -51,7 +57,7 @@ export default class TodoListService {
     title: string,
     imageUpload:string,
     status: string,
-    date :Date
+    date :Date 
   ) => {
     if (!userId) {
       throw createHttpError(404, "invalid id");

@@ -1,9 +1,8 @@
-import TodoDao from "../Dao/todoDao";
+import TodoDao from "../dao/todoDao";
 import createHttpError from "http-errors";
 import csvtojson from "csvtojson";
 import { ITodo } from "../types/todo";
 import { error } from "console";
-
 
 export default class TodoListService {
   private todoDao = new TodoDao();
@@ -22,17 +21,17 @@ export default class TodoListService {
     return await this.todoDao.getTodosdao(userId);
   };
 
-  public getImageservices = async (id:string)=>{
-     return this.todoDao.getImageUrl(id);
-  }
+  public getImageservices = async (id: string) => {
+    return this.todoDao.getImageUrl(id);
+  };
 
-  public addTodoservices = async ( 
+  public addTodoservices = async (
     userId: string,
     title: string,
     description: string,
     status: string,
     isActivated: boolean,
-    imageUpload:string,
+    imageUpload: string,
     date: Date
   ) => {
     if (!userId) {
@@ -55,9 +54,9 @@ export default class TodoListService {
     des: string,
     user: string,
     title: string,
-    imageUpload:string,
+    imageUpload: string,
     status: string,
-    date :Date 
+    date: Date
   ) => {
     if (!userId) {
       throw createHttpError(404, "invalid id");
@@ -66,10 +65,10 @@ export default class TodoListService {
       description: des,
       user: user,
       title: title,
-      isActivated:true,
-      imageUpload:"",
+      isActivated: true,
+      imageUpload: "",
       status: status,
-      date : date
+      date: date,
     });
   };
 
@@ -79,22 +78,32 @@ export default class TodoListService {
     }
     return await this.todoDao.deleteTododao(id);
   };
-  public addCsv = async (filepath: string,userId:string,isActivated:boolean) => {  
-
+  public addCsv = async (
+    filepath: string,
+    userId: string,
+    isActivated: boolean
+  ) => {
     const generateRandomString = (length: number): string => {
-      const characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+      const characters =
+        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
       let randomString = "";
       for (let i = 0; i < length; i++) {
         const randomIndex = Math.floor(Math.random() * characters.length);
         randomString += characters.charAt(randomIndex);
-      } 
+      }
       return randomString;
-    };  
-        const todos:ITodo[] = [];
-        const data = await csvtojson().fromFile(filepath);
-        data.map((item:any)=>{
-          todos.push({...item,user:userId, isActivated:true,short_id:generateRandomString(8),date:new Date()});
-        }) 
-        return await this.todoDao.addCsvDao(todos)
+    };
+    const todos: ITodo[] = [];
+    const data = await csvtojson().fromFile(filepath);
+    data.map((item: any) => {
+      todos.push({
+        ...item,
+        user: userId,
+        isActivated: true,
+        short_id: generateRandomString(8),
+        date: new Date(),
+      });
+    });
+    return await this.todoDao.addCsvDao(todos);
   };
 }

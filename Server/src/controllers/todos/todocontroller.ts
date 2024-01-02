@@ -1,12 +1,11 @@
 import { Response, Request, NextFunction } from "express";
-import TodoListService from "../../Services/todo.service";
+import TodoListService from "../../services/todo.service";
 
 import { google } from "googleapis";
-import fs from 'fs'
+import fs from "fs";
 import { ITodo } from "../../types/todo";
 
-const GOOGLE_API_FOLDER = '1KDoJUw5MpK2lnuqh4Z9RM2LqRPIkk3rC'
-
+const GOOGLE_API_FOLDER = "1KDoJUw5MpK2lnuqh4Z9RM2LqRPIkk3rC";
 
 class TodoList {
   private addServices = new TodoListService();
@@ -25,10 +24,19 @@ class TodoList {
   public addTodo = async (req: Request, res: Response) => {
     console.log(req.body, "this is the body");
     const userId = req.body.id;
-    const { title, description, status ,isActivated,date,imageUpload} = req.body;
+    const { title, description, status, isActivated, date, imageUpload } =
+      req.body;
     try {
       console.log(userId, "user id of addtodo");
-      const todo = await this.addServices.addTodoservices(userId,title,description,status,isActivated,imageUpload,date);
+      const todo = await this.addServices.addTodoservices(
+        userId,
+        title,
+        description,
+        status,
+        isActivated,
+        imageUpload,
+        date
+      );
       const val = todo.user;
       console.log(val, "this is val in addtodo");
       console.log(todo, "todo id in controller");
@@ -73,87 +81,88 @@ class TodoList {
       const DelteTodo = await this.addServices.deleteTodoservices(
         req.params.id
       );
-     return res.status(200).json({ message: "Todo Deleted", DelteTodo });
+      return res.status(200).json({ message: "Todo Deleted", DelteTodo });
     } catch (error) {
       throw error;
     }
   };
 
-  public addImage = async(req:Request,res:Response,next:NextFunction) => {
-      
-     // console.log(req, 'this is in controller');
-       const image = req.file;
-       const userId = req.params.id
-       
-       if (!image) {
-         return res.status(400).send({ error: 'No image file provided' });
-        }
-        
-        if (!image.path) {
-          return res.status(400).send({ error: 'Image file path is undefined' });
-        }
-    try{
-        const auth = new google.auth.GoogleAuth({
-        keyFile: './drive.json',
-        scopes: ['https://www.googleapis.com/auth/drive']
+  public addImage = async (req: Request, res: Response, next: NextFunction) => {
+    // console.log(req, 'this is in controller');
+    const image = req.file;
+    const userId = req.params.id;
+
+    if (!image) {
+      return res.status(400).send({ error: "No image file provided" });
+    }
+
+    if (!image.path) {
+      return res.status(400).send({ error: "Image file path is undefined" });
+    }
+    try {
+      const auth = new google.auth.GoogleAuth({
+        keyFile: "./drive.json",
+        scopes: ["https://www.googleapis.com/auth/drive"],
       });
       const driveService = google.drive({
         version: "v3",
-        auth : auth
+        auth: auth,
       });
       const metaData = {
-        name : image?.originalname.substring(
+        name: image?.originalname.substring(
           0,
           image.originalname.lastIndexOf(".")
         ),
-        parents: [GOOGLE_API_FOLDER]
+        parents: [GOOGLE_API_FOLDER],
       };
       const media = {
-        mimeType : image?.mimetype,
-        body : fs.createReadStream(image?.path) 
-      }
+        mimeType: image?.mimetype,
+        body: fs.createReadStream(image?.path),
+      };
       const result = await driveService.files.create({
-        requestBody : metaData,
-        media : media,
+        requestBody: metaData,
+        media: media,
         fields: "id",
-      })
-       const imageUrl :string  = `https:drive.google.com/uc?export=view&id=${result.data.id}`
-       const uploadImg:any   = await this.addServices.addImage(imageUrl,userId);
-       console.log(uploadImg); 
+      });
+      const imageUrl: string = `https:drive.google.com/uc?export=view&id=${result.data.id}`;
+      const uploadImg: any = await this.addServices.addImage(imageUrl, userId);
+      console.log(uploadImg);
       //  res.send(result.data.id);
-     //  console.log(uploadImg.imageUpload, "-----------------")
-       res.send(uploadImg);
+      //  console.log(uploadImg.imageUpload, "-----------------")
+      res.send(uploadImg);
     } catch (error) {
-      throw error
-    } 
-  }
+      throw error;
+    }
+  };
 
-  public getImage = async (req:Request , res:Response,next : NextFunction) => {
+  public getImage = async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
-    try{
+    try {
       const getImgeurl = await this.addServices.getImageservices(id);
       return await res.send(getImgeurl);
-    } 
-    catch(error){
-       throw (error);
+    } catch (error) {
+      throw error;
     }
-  }
+  };
 
-  public addCsv = async (req:Request, res:Response,next:NextFunction)=>{
-      try{
-        const filepath = req.file?.path;
-        if(!filepath)return 
-        console.log(req.file?.originalname,'this is the file in controller');
-        console.log(req.file?.path, 'this is the body in cont');
-        console.log(req.body.id, "this is the userid in csv in cont");
-        const userId = req.body.id
-        const isActivated = true;
-        const uploadCsv = await this.addServices.addCsv(filepath,userId,isActivated);
-        return res.status(200).json({message:"todo csv", uploadCsv});
-      }
-      catch(error) {
-       throw error;
-      }
-  }
+  public addCsv = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const filepath = req.file?.path;
+      if (!filepath) return;
+      console.log(req.file?.originalname, "this is the file in controller");
+      console.log(req.file?.path, "this is the body in cont");
+      console.log(req.body.id, "this is the userid in csv in cont");
+      const userId = req.body.id;
+      const isActivated = true;
+      const uploadCsv = await this.addServices.addCsv(
+        filepath,
+        userId,
+        isActivated
+      );
+      return res.status(200).json({ message: "todo csv", uploadCsv });
+    } catch (error) {
+      throw error;
+    }
+  };
 }
 export default TodoList;

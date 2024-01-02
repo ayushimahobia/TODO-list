@@ -1,7 +1,8 @@
 import { Response, Request } from "express";
-import userService from "../Services/userservices";
+import userService from "../services/userservices";
 import jwt from "jsonwebtoken";
-const jwtSecret = "4715aed3c946f7b0a38e6b534a9583628d84e96d10fbc04700770d572af3dce43625dd";
+const jwtSecret =
+  "4715aed3c946f7b0a38e6b534a9583628d84e96d10fbc04700770d572af3dce43625dd";
 
 export default class Userlist {
   private userservices = new userService();
@@ -13,10 +14,10 @@ export default class Userlist {
     console.log(req.body.username, "this is the username");
     console.log(email, "this is signup email");
     console.log(password, " this is signup password");
-    try{
+    try {
       const checkSignup = await this.userservices.signup(
         username,
-        email,  
+        email,
         password
       );
       if (!checkSignup) {
@@ -58,14 +59,16 @@ export default class Userlist {
       //   Authorization: token,
       // };
       // console.log(">>>>>>>>>>>>>>>>>>>>>> Request Headers: ", req.headers);
-      res.status(200).json({data:token,result,message:"login successfully"});
+      res
+        .status(200)
+        .json({ data: token, result, message: "login successfully" });
     } catch (error) {
       console.log(error);
-     return res.status(500).json({ message: "Something went wrong" });
+      return res.status(500).json({ message: "Something went wrong" });
     }
   };
   public logout = async (req: Request, res: Response): Promise<void> => {
     res.clearCookie("refreshToken");
-     res.status(200).json({ success: true, message: "LogOut SuccesFully" });
+    res.status(200).json({ success: true, message: "LogOut SuccesFully" });
   };
 }

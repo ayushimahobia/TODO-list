@@ -1,4 +1,4 @@
-import Userdao from "../Dao/userdao";
+import Userdao from "../dao/userdao";
 import user from "../models/user";
 import bcrypt from "bcrypt";
 
@@ -10,7 +10,7 @@ export default class userService {
     }
     const checkExisting = await this.userdao.getuserbyId(email);
     if (checkExisting) {
-      throw Error( "email exist");
+      throw Error("email exist");
     }
     const hashedPassword = await bcrypt.hash(password, 10);
     return await this.userdao.signupdao(username, email, hashedPassword);
@@ -18,7 +18,7 @@ export default class userService {
 
   public login = async (email: string, password: string) => {
     if (!email || !password) {
-      throw Error( "Missing credentials");
+      throw Error("Missing credentials");
     }
     const checkExisting = await this.userdao.getuserbyId(email);
 

@@ -20,12 +20,11 @@ class TodoList {
       throw error;
     }
   };
-
+ 
   public addTodo = async (req: Request, res: Response) => {
     console.log(req.body, "this is the body");
     const userId = req.body.id;
-    const { title, description, status, isActivated, date, imageUpload } =
-      req.body;
+    const { title, description, status, isActivated, imageUpload,short_id,date } = req.body;
     try {
       console.log(userId, "user id of addtodo");
       const todo = await this.addServices.addTodoservices(
@@ -35,21 +34,19 @@ class TodoList {
         status,
         isActivated,
         imageUpload,
+        short_id,
         date
       );
-      const val = todo.user;
-      console.log(val, "this is val in addtodo");
-      console.log(todo, "todo id in controller");
       res.status(200).json({ messsge: "New Todo Added", todo });
     } catch (error) {
-      throw error;
+      throw error; 
     }
   };
 
   public updateTodo = async (req: Request, res: Response) => {
     console.log(req.body, "req body in console");
     const user = req.body.id;
-    const userId = req.params.id;
+    const Id = req.params.id;
     const des = req.body.description;
     const title = req.body.title;
     const status = req.body.status;
@@ -57,7 +54,7 @@ class TodoList {
     const imageUpload = req.body.imageUpload;
     try {
       const updateTodo = await this.addServices.updateTodoservices(
-        userId,
+        Id,
         des,
         user,
         title,

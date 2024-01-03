@@ -3,6 +3,19 @@ import createHttpError from "http-errors";
 import csvtojson from "csvtojson";
 import { ITodo } from "../types/todo";
 import { error } from "console";
+import todo from "../models/todo";
+
+const generateRandomString = (length: number): string => {
+  const characters =
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let randomString = "";
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length);
+    randomString += characters.charAt(randomIndex);
+  }
+  return randomString;
+};
+
 
 export default class TodoListService {
   private todoDao = new TodoDao();
@@ -32,12 +45,14 @@ export default class TodoListService {
     status: string,
     isActivated: boolean,
     imageUpload: string,
+    short_id:string,
     date: Date
   ) => {
     if (!userId) {
       throw error("Id not found");
     }
-
+     console.log("services");
+    short_id = generateRandomString(8);
     return await this.todoDao.addTododao(
       userId,
       description,
@@ -45,28 +60,31 @@ export default class TodoListService {
       title,
       isActivated,
       imageUpload,
+      short_id,
       date
     );
   };
 
   public updateTodoservices = async (
-    userId: string,
+    id: string,
     des: string,
     user: string,
     title: string,
-    imageUpload: string,
     status: string,
+    imageUpload: string,
     date: Date
   ) => {
-    if (!userId) {
+    if (!id) {
       throw createHttpError(404, "invalid id");
     }
-    return await this.todoDao.updateTododao(userId, {
+    const resUrl: ITodo | null = await todo.findOne({ _id: id });
+    const imgUrl: any = resUrl?.imageUpload
+    return await this.todoDao.updateTododao(id, {
       description: des,
       user: user,
       title: title,
       isActivated: true,
-      imageUpload: "",
+      imageUpload: imgUrl,
       status: status,
       date: date,
     });
@@ -83,16 +101,6 @@ export default class TodoListService {
     userId: string,
     isActivated: boolean
   ) => {
-    const generateRandomString = (length: number): string => {
-      const characters =
-        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-      let randomString = "";
-      for (let i = 0; i < length; i++) {
-        const randomIndex = Math.floor(Math.random() * characters.length);
-        randomString += characters.charAt(randomIndex);
-      }
-      return randomString;
-    };
     const todos: ITodo[] = [];
     const data = await csvtojson().fromFile(filepath);
     data.map((item: any) => {

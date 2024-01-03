@@ -1,51 +1,54 @@
-import { ITodo } from "./../types/todo"
-import mongoose, { model, Schema } from "mongoose"
+import { ITodo } from "./../types/todo";
+import mongoose, { model, Schema } from "mongoose";
 
 const generateRandomString = (length: number): string => {
-  const characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  const characters =
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
   let randomString = "";
   for (let i = 0; i < length; i++) {
     const randomIndex = Math.floor(Math.random() * characters.length);
     randomString += characters.charAt(randomIndex);
   }
+
+  console.log(randomString, "randomString...................");
   return randomString;
 };
 
 const todoSchema: Schema = new Schema(
   {
-    title : {
-      type:String,
-      required:true,
+    title: {
+      type: String,
+      required: true,
     },
     short_id: {
       type: String,
-      default: generateRandomString(8), 
+      default: `${generateRandomString(8)}`,
       unique: true,
     },
-    description: { 
+    description: {
       type: String,
-      required: true, 
+      required: true,
     },
-    status : {
-      type:String,
-      default : "pending",
-      required:true,
+    status: {
+      type: String,
+      default: "pending",
+      required: true,
     },
     user: {
       type: mongoose.Types.ObjectId,
-      ref: "user", 
+      ref: "user",
     },
-    isActivated :{
-      type : Boolean
+    isActivated: {
+      type: Boolean,
     },
-    imageUpload :{
-      type : String 
+    imageUpload: {
+      type: String,
     },
-    date : {
-      type:Date,
-      default:Date.now(),
-    }
+    date: {
+      type: Date,
+      default: Date.now(),
+    },
   },
   { timestamps: true }
-)
-export default model<ITodo>("Todo", todoSchema)
+);
+export default model<ITodo>("Todo", todoSchema);

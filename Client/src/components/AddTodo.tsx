@@ -32,10 +32,12 @@ const AddTodo: React.FC<AddProps> = ({ setList, list, setRefreshList }) => {
     if (result.status === 200) {
       setList([...list, result.data.todo]);
       toast("Todo Added");
+      clearFields();
       setRefreshList(new Date())
     } else {
       toast(result.data.message);
     }
+
   };
   
   const handleInputChange = (e: any) => {
@@ -55,19 +57,11 @@ const AddTodo: React.FC<AddProps> = ({ setList, list, setRefreshList }) => {
   };
   
   return ( 
-    <div className="modal mt-5" id="exampleModal">
-      <div className="modal-dialog" role="document">
+    <div className="mt-5" id="">
+      <div className="dialog" role="document">
         <div className="modal-content">
           <div className="modal-header">
             <div className="modal-title">Add New Todo</div>
-            <button
-              type="button"
-              className="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="close"
-            >
-              <span arial-hidden="true"></span>
-            </button>
           </div>
           <div className="modal-body">
             <div className="form-group">
@@ -95,16 +89,9 @@ const AddTodo: React.FC<AddProps> = ({ setList, list, setRefreshList }) => {
               />
             </div>
           </div>
-          <div className="modal-footer">
+          <div className="modal-footer justify-content-center">
             <button className="btn btn-secondary" onClick={handleTodoSubmit}>
               Save Now
-            </button>
-            <button
-              className="btn btn-secondary"
-              onClick={clearFields}
-              data-bs-dismiss="modal"
-            >
-              Close
             </button>
           </div>
         </div>

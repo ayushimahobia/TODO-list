@@ -6,6 +6,7 @@ import { ITodo } from "../App";
 interface UpdateProps {
   todoUpdate:ITodo,
   setUpdateModalOpen:any
+  setRefreshList:any
 }
 
 const UpdateTodo: React.FC<UpdateProps> = ({
@@ -13,7 +14,8 @@ const UpdateTodo: React.FC<UpdateProps> = ({
   // list,
   // selectedTodo,
   setUpdateModalOpen,
-  todoUpdate
+  todoUpdate,
+  setRefreshList
 }) => {
   const [todo, setTodo] = useState<Partial<ITodo>>({
     title: "",
@@ -52,12 +54,9 @@ const UpdateTodo: React.FC<UpdateProps> = ({
 
     const result = await UpdateTodoSend(updatedTodo, updatedTodo._id);
     if (result.status === 200) {
-      // const updatedList = list.map((item) =>
-      //   item._id === updatedTodo._id ? updatedTodo : item
-      // );
-      // setList(updatedList);
       toast("Todo Updated");
       setUpdateModalOpen(false);
+      setRefreshList(new Date());
     } else {
       toast(result.data.message);
     }
@@ -83,9 +82,24 @@ const UpdateTodo: React.FC<UpdateProps> = ({
   };
 
   return (
-    <div className="Modal" id="updateModal">
-      <div className="modal-dialog" role="document">
-        <div className="modal-content">
+    <div className="Modal" id="updateModal" 
+    style={{
+      position: "fixed",
+      top: "0",
+      left: "0",
+      zIndex: "1000",
+      width: "100%",
+      height: "100%",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      backgroundColor: "rgba(0, 0, 0, 0.5)",
+    }}
+    >
+      <div className="" role="document">
+        <div className="modal-content"
+        style={{width:"100%"}}
+        >
           <div className="modal-header">
             <div className="modal-title">Update Todo</div>
             <button
@@ -124,12 +138,16 @@ const UpdateTodo: React.FC<UpdateProps> = ({
             </div>
           </div>
           <div className="modal-footer">
+            <div style={{paddingRight:"5px"}}>
             <button className="btn btn-secondary" onClick={handleTodoUpdate}>
               Update Now
             </button>
+            </div>
+            <div style={{paddingLeft:"5px"}}>
             <button className="btn btn-secondary" onClick={clearFields}>
               Close
             </button>
+            </div>
           </div>
         </div>
       </div>

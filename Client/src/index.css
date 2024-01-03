@@ -1,4 +1,4 @@
-
+/* 
 
 
 /* styles.css */
@@ -116,6 +116,7 @@
 
 .modal-body {
   padding: 1rem;
+  background-color: #f8f9fa;
 }
 
 .form-group {
@@ -151,3 +152,23 @@
 .btn-secondary:hover {
   background-color: #545b62;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 

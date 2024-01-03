@@ -64,18 +64,28 @@ const Todo: React.FC<TodoProps> = ({ todo, setRefreshList }) => {
   // console.log(imageUrl, "this is in todo.tsx");
   return (
     <>
-      {imageModalOpen && <ImageUpload currentImg={currentImg} onClose={()=>{setImageModalOpen(false)}}/>}
+      {imageModalOpen && (
+        <ImageUpload
+          currentImg={currentImg}
+          onClose={() => {
+            setImageModalOpen(false);
+          }}
+        />
+      )}
+       {updateModalOpen && (
+        <UpdateTodo todoUpdate={todo} setUpdateModalOpen={setUpdateModalOpen} setRefreshList={setRefreshList} />
+      )}
       <div
-        className="d-flex mx-5 my-4 border px-2 py-2 h-25 w-50 justify-content-between"
+        className="d-flex mx-5 my-4 border px-2 py-2 h-25 w-75 justify-content-between"
         style={{
           height: "250px",
           width: "40%",
           background: "#E0FFFF",
-          boxShadow:
-            "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
+          boxShadow:"0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
+          borderRadius: '0 0 0.5rem 0.5rem'
         }}
       >
-        <div className="mx-2">
+        <div className="mx-2 my-4">
           {!imageUrl && (
             <div>
               <label
@@ -151,37 +161,33 @@ const Todo: React.FC<TodoProps> = ({ todo, setRefreshList }) => {
           <span className="text-start mt-2">{todo.status}</span>
           <span className="text-start mt-2">{moment(todo.date).fromNow()}</span>
         </div>
-        <div className="h-100 mx-2 ">
-          <button
-            className="mt-4"
-            style={{
-              background: "#971111",
-              padding: "5px",
-              boxShadow:
-                "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
-              height: "40px",
-              width: "60px",
-              display: "inline-block",
-              marginLeft: "auto",
-            }}
-            onClick={handleDelete}
-          >
-            Delete
-          </button>
+
+
+        <div className="h-100 mx-2 "
+        style={{justifyItems:"space-between",float:'right'}}
+        >
+          <div style={{paddingBottom:"5px"}}>
           <button
             type="button"
-            // data-bs-toggle="modal"
-            // data-bs-target="#updateModal"
-            className="btn btn-outline-primary"
+            className="btn btn-outline-info mt-3"
             onClick={() => setUpdateModalOpen(true)}
+            style={{width:'100px'}}
           >
             edit
           </button>
+          </div> 
+          <div  >
+          <button
+            type="button"
+            className="btn btn-outline-danger mb-2"
+            onClick={handleDelete}
+            style={{width:'100px'}}
+          >
+            Delete
+          </button>
+          </div>
         </div>
       </div>
-      {updateModalOpen && (
-        <UpdateTodo todoUpdate={todo} setUpdateModalOpen={setUpdateModalOpen} />
-      )}
     </>
   );
 };

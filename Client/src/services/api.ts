@@ -6,6 +6,7 @@ import {
   LOGIN,
   UPDATETodo,
   Uploadimg,
+  Getimg
 } from "./apiConstant";
 import { REGISTER } from "./apiConstant";
 import { GETTodos } from "./apiConstant";
@@ -67,7 +68,6 @@ export const AddTodoSend = async (data: ITodo) => {
     });
     return response;
   } catch (error) {
-    console.error("Error adding todo:", error);
     throw error;
   }
 };
@@ -92,7 +92,6 @@ export const GetTodoSend = async () => {
 export const UpdateTodoSend = async (data: ITodo, _id: any) => {
   const tokenValue = localStorage.getItem("token");
   console.log(_id, " id in apiconst");
-
   try {
     const response = await axios.put(`${UPDATETodo}/${_id}`, data, {
       headers: {
@@ -145,7 +144,7 @@ export const Uploadimage = async (image: any, _id: any) => {
   console.log(image, _id);
   const tokenValue = localStorage.getItem("token");
   try {
-    console.log(image, "this is csv in api post");
+    //console.log(image, "this is csv in api post");
     const response = await axios.post(`${Uploadimg}/${_id}`, image, {
       headers: {
         Authorization: `Bearer ${tokenValue}`,
@@ -155,6 +154,23 @@ export const Uploadimage = async (image: any, _id: any) => {
     return response;
   } catch (error) {
     console.error("Error uploading Csv:", error);
+    throw error;
+  }
+};
+
+export const getImage = async (_id: any) => {
+ // console.log (_id);
+  const tokenValue = localStorage.getItem("token");
+  try {
+    const response = await axios.get(`${Getimg}/${_id}`,{
+      headers: {
+        Authorization: `Bearer ${tokenValue}`,
+        "content-type": "multipart/form-data",
+      },
+    });
+    return response;
+  } catch (error) {
+    console.error("Error in getting image:", error);
     throw error;
   }
 };

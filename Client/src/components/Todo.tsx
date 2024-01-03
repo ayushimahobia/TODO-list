@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ITodo } from "../App";
-import { DeleteTodoSend } from "../services/api";
+import { DeleteTodoSend, getImage } from "../services/api";
 import { Uploadimage } from "../services/api";
 import { toast } from "react-toastify";
 import moment from "moment";
+import ImageUpload from "./Image";
+import UpdateTodo from "./UpdateTodo";
 
 interface TodoProps {
   todo: ITodo;
@@ -23,100 +25,164 @@ const Todo: React.FC<TodoProps> = ({ todo, setRefreshList }) => {
 
   const [image, setImage] = useState("");
   const [imageUrl, setImageUrl] = useState("");
+  const [currentImg, setCurrentImg] = useState("");
+  const [updateModalOpen, setUpdateModalOpen] = useState<any>(false);
+  const [imageModalOpen, setImageModalOpen] = useState<any>(false);
+
+  async function getImageurl() {
+    try {
+      const url = await getImage(todo._id);
+      if (url.status === 200) {
+        // console.log(url.data);
+        setImageUrl(url.data);
+        setRefreshList(new Date());
+      } else {
+        setImageUrl("");
+      }
+    } catch (error) {
+      toast("image not there");
+    }
+  }
+
+  useEffect(() => {
+    //   console.log(imageUrl,'this is in effect');
+    getImageurl();
+  }, [todo._id]);
+
   const uploadImage = async () => {
     const formData = new FormData();
     formData.append("image", image);
     const uploadImage = await Uploadimage(formData, todo._id);
     if (uploadImage.status === 200) {
-      setImageUrl(
-        `https:drive.google.com/uc?export=view&id=${uploadImage.data}`
-      );
+      setImageUrl(`${uploadImage.data}`);
       setRefreshList(new Date());
-      console.log(imageUrl);
       toast("image uploaded");
     } else {
       toast("Image not uploaded");
     }
   };
-
+  // console.log(imageUrl, "this is in todo.tsx");
   return (
-    <div className="row" style={{ justifyContent: "center" }}>
+    <>
+      {imageModalOpen && <ImageUpload currentImg={currentImg} onClose={()=>{setImageModalOpen(false)}}/>}
       <div
-        className="todo "
-        style={{ height: "250px", width: "30%",
-        background:"#E0FFFF",
-        boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)'
-       }}
+        className="d-flex mx-5 my-4 border px-2 py-2 h-25 w-50 justify-content-between"
+        style={{
+          height: "250px",
+          width: "40%",
+          background: "#E0FFFF",
+          boxShadow:
+            "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
+        }}
       >
-        <div className="header">{todo.title}</div>
-        <div className="todo-body">
-          <p className="todo-desc">{todo.description}</p>
-          <p className="todo-desc">{todo.status}</p>
-          <p className="todo-time">{moment(todo.date).fromNow()}</p>
-        </div>
-        <div
-          className="deleteButton"
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-           
-          }}
-        >
-          <button
-            style={{ background: "#971111", padding: "5px" ,
-            boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)'
-          }}
-            onClick={handleDelete}
-          >
-            Delete
-          </button>
-        </div>
-      </div>
-      <div
-        className="img"
-        style={{ height: "250px", width: "30%",
-        background:"#E0FFFF",
-        boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)'
-       }}
-      >
-        {!imageUrl && (
-          <div>
-            <input
-              type="file"
-              name="image"
-              onChange={(e: any) => {
-                setImage(e.target.files[0]);
-              }}
-            />
-            {image && (
-              <button
-                className="uploadImage"
-                onClick={uploadImage}
-                style={{ padding: "5px", border: "1px solid black" }}
+        <div className="mx-2">
+          {!imageUrl && (
+            <div>
+              <label
+                style={{
+                  display: "inline-block",
+                  position: "relative",
+                  overflow: "hidden",
+                  marginTop: "10px",
+                }}
               >
-                Upload
-              </button>
-            )}
-          </div>
-        )}
-        {imageUrl && (
+                <input
+                  type="file"
+                  name="image"
+                  onChange={(e: any) => setImage(e.target.files[0])}
+                  style={{
+                    fontSize: "100px",
+                    position: "absolute",
+                    left: 0,
+                    top: 0,
+                    opacity: 0,
+                  }}
+                />
+                <span
+                  style={{
+                    display: "inline-block",
+                    padding: "6px 6px",
+                    cursor: "pointer",
+                    backgroundColor: "#5bc0de",
+                    color: "#fff",
+                    borderRadius: "5px",
+                    border: "1px solid #5bc0de",
+                    transition: "background-color 0.3s",
+                  }}
+                >
+                  Choose File
+                </span>
+              </label>
+
+              {image && (
+                <button
+                  className="uploadImage"
+                  onClick={uploadImage}
+                  style={{ border: "1px solid black" }}
+                >
+                  Upload
+                </button>
+              )}
+            </div>
+          )}
           <div
-            style={{
-              width: "300px",
-              height: "250px",
-              overflow: "hidden",
+            onClick={() => {
+              console.log("current", imageUrl);
+              setCurrentImg(imageUrl);
+              setImageModalOpen(true);
             }}
           >
             <img
               src={imageUrl}
               alt="imagex"
-              style={{ objectFit: "contain", width: "100%", height: "250px"}}
+              style={{ height: "100px", width: "100px" }}
             />
           </div>
-        )}
+        </div>
+
+        <div className="d-flex flex-column mx-3 ">
+          <span className="text-start text-uppercase fw-bold mt-1">
+            {todo.title}
+          </span>
+
+          <span className="text-start text-truncate mt-2">
+            {todo.description}
+          </span>
+          <span className="text-start mt-2">{todo.status}</span>
+          <span className="text-start mt-2">{moment(todo.date).fromNow()}</span>
+        </div>
+        <div className="h-100 mx-2 ">
+          <button
+            className="mt-4"
+            style={{
+              background: "#971111",
+              padding: "5px",
+              boxShadow:
+                "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
+              height: "40px",
+              width: "60px",
+              display: "inline-block",
+              marginLeft: "auto",
+            }}
+            onClick={handleDelete}
+          >
+            Delete
+          </button>
+          <button
+            type="button"
+            // data-bs-toggle="modal"
+            // data-bs-target="#updateModal"
+            className="btn btn-outline-primary"
+            onClick={() => setUpdateModalOpen(true)}
+          >
+            edit
+          </button>
+        </div>
       </div>
-    </div>
+      {updateModalOpen && (
+        <UpdateTodo todoUpdate={todo} setUpdateModalOpen={setUpdateModalOpen} />
+      )}
+    </>
   );
 };
 

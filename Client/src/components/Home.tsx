@@ -16,7 +16,7 @@ const Home:React.FC<homeProps>=({setRefreshList,refreshList})=> {
   const [list, setList] = useState<ITodo[]>([]);
   const [selectedTodo, setSelectedTodo] = useState<ITodo | null>(null);
   const [updateModalOpen, setUpdateModalOpen] = useState<any>(false);
-  // const [refreshList,setRefreshList] = useState<ITodo[]>([]);
+  //const [refreshList,setRefreshList] = useState<ITodo[]>([]);
   
   
   useEffect(() => {
@@ -43,16 +43,19 @@ const Home:React.FC<homeProps>=({setRefreshList,refreshList})=> {
 
   return (
     <div>
-      <div className="div1"
+      <div className="w-100"
       style={{ margin: "10px 10px 10px 10px" }}
       >
-        <div className="div2 "
+        <div className="justify-content-center"
         style={{ margin: "10px 10px 10px 10px" }}
         >
           {list.map((todo) => (
             <div
-              className="div2" 
-              style={{ margin: "25px 25px 25px 25px" }}
+              className="justify-content-center" 
+              style={{ margin: "auto",
+              display:'flex',
+           
+             }}
               onClick={() => {
                 setSelectedTodo(todo);
                 setUpdateModalOpen(true);
@@ -76,14 +79,14 @@ const Home:React.FC<homeProps>=({setRefreshList,refreshList})=> {
           Add
         </button>
       </div>
-      {updateModalOpen && selectedTodo !== null && (
+      {/* {updateModalOpen && selectedTodo !== null && (
         <UpdateTodo
           setList={setList}
           list={list}
           selectedTodo={selectedTodo}
           setUpdateModalOpen={setUpdateModalOpen}
         />
-      )}
+      )} */}
      <AddTodo setList={setList} list={list} setRefreshList = {setRefreshList}/>
     </div>
   );

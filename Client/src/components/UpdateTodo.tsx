@@ -4,17 +4,16 @@ import { UpdateTodoSend } from "../services/api"; // Import your update service 
 import { ITodo } from "../App";
 
 interface UpdateProps {
-  setList: React.Dispatch<React.SetStateAction<ITodo[]>>;
-  list: ITodo[];
-  selectedTodo: ITodo | null;
-  setUpdateModalOpen: any;
+  todoUpdate:ITodo,
+  setUpdateModalOpen:any
 }
 
 const UpdateTodo: React.FC<UpdateProps> = ({
-  setList,
-  list,
-  selectedTodo,
+  // setList,
+  // list,
+  // selectedTodo,
   setUpdateModalOpen,
+  todoUpdate
 }) => {
   const [todo, setTodo] = useState<Partial<ITodo>>({
     title: "",
@@ -23,17 +22,17 @@ const UpdateTodo: React.FC<UpdateProps> = ({
   });
 
   useEffect(() => {
-    if (selectedTodo) {
+    if (todoUpdate) {
       setTodo({
-        title: selectedTodo.title,
-        description: selectedTodo.description,
-        status: selectedTodo.status,
+        title: todoUpdate.title,
+        description: todoUpdate.description,
+        status: todoUpdate.status,
       });
     }
-  }, [selectedTodo]);
+  }, [todoUpdate]);
 
   const handleTodoUpdate = async () => {
-    if (!selectedTodo) {
+    if (!todoUpdate) {
       toast("No todo selected for update");
       return;
     }
@@ -44,7 +43,7 @@ const UpdateTodo: React.FC<UpdateProps> = ({
     }
 
     const updatedTodo = {
-      ...selectedTodo,
+      ...todoUpdate,
       title: todo.title!,
       description: todo.description!,
       status: todo.status!,
@@ -53,17 +52,17 @@ const UpdateTodo: React.FC<UpdateProps> = ({
 
     const result = await UpdateTodoSend(updatedTodo, updatedTodo._id);
     if (result.status === 200) {
-      const updatedList = list.map((item) =>
-        item._id === updatedTodo._id ? updatedTodo : item
-      );
-      setList(updatedList);
+      // const updatedList = list.map((item) =>
+      //   item._id === updatedTodo._id ? updatedTodo : item
+      // );
+      // setList(updatedList);
       toast("Todo Updated");
       setUpdateModalOpen(false);
     } else {
       toast(result.data.message);
     }
   };
-
+  
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -80,11 +79,11 @@ const UpdateTodo: React.FC<UpdateProps> = ({
       description: "",
       status: "",
     });
-    setUpdateModalOpen(false);
+   setUpdateModalOpen(false);
   };
 
   return (
-    <div className="updateModal" id="updateModal">
+    <div className="Modal" id="updateModal">
       <div className="modal-dialog" role="document">
         <div className="modal-content">
           <div className="modal-header">
@@ -93,7 +92,7 @@ const UpdateTodo: React.FC<UpdateProps> = ({
               type="button"
               className="btn-close"
               aria-label="close"
-              onClick={() => setUpdateModalOpen(false)}
+               onClick={() => setUpdateModalOpen(false)}
             >
               <span aria-hidden="true"></span>
             </button>

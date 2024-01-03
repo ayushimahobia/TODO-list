@@ -9,6 +9,7 @@ import { API_URL } from "../config";
  export  const DELETETodo = `${API_URL}/delete-todo`
  export  const AddCsv = `${API_URL}/csv-upload`
  export  const Uploadimg = `${API_URL}/image-upload`
+ export  const Getimg = `${API_URL}/get-image`
 
 
 

@@ -3,8 +3,8 @@ import { toast } from "react-toastify";
 import { AddTodoSend } from "../services/api";
 import { ITodo } from "../App";
 
-
-
+  
+ 
 interface AddProps {
   setList: any;  
   list: ITodo[];

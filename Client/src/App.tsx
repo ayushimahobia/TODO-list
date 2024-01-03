@@ -17,17 +17,13 @@ export interface ITodo {
   title: string;
   description: string;
   status: string;
+  imageUpload : string;
   date : Date 
 }
 
 const App: React.FC = () => {
   const [loggedIn, setLoggedIn] = useState(!!localStorage.getItem("token"));
   const [refreshList,setRefreshList] = useState<ITodo[]>([]); // need to change type as date 
-  // const item = localStorage.getItem("user");
-  // // useEffect(() => {
-  // //   setLoggedIn(item !== null ? true : false);
-  // //   console.log(loggedIn,'this is logged iin app'); 
-  // // });
 
   return (
     <>
